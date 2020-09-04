@@ -8,7 +8,9 @@ typedef enum {
     LED_GREEN_COLOR,
 } color_t;
 
+extern color_t led_color;
 color_t led_control(color_t);
+
 void led_init_gpio(void);
 void led_red_on(void);
 void led_blue_on(void);

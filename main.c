@@ -1,5 +1,7 @@
 #include "lab_service.h"
+#include "MKL25Z4.h"
 
-int main() {
-		lab_two();
+int main (void) {    
+	SystemCoreClockUpdate();
+	lab_four();
 }

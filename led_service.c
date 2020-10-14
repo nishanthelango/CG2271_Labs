@@ -3,6 +3,7 @@
 #include "cmsis_os2.h"
 #include "led_service.h"
 #include "utils.h"
+#include "delay_service.h"
 
 void led_init_gpio(void) {
 	// Enable Clock to PORTB and PORTD
@@ -58,17 +59,40 @@ void led_off_rgb() {
 void led_red_thread(void *argument) {
 	for (;;) {
 		PTB->PDOR |= (MASK(LED_RED_PIN));
-		osDelay(1000);
+		delay_program(0x80000);
 		PTB->PDOR &= (~MASK(LED_RED_PIN));
-		osDelay(1000);
+		delay_program(0x80000);
 	}
 }
 
 void led_green_thread(void *argument) {
 	for (;;) {
 		PTB->PDOR |= (MASK(LED_GREEN_PIN));
+		delay_program(0x80000);
+		PTB->PDOR &= (~MASK(LED_GREEN_PIN));
+		delay_program(0x80000);
+	}
+}
+
+void led_red_mutex(void *argument) {
+	for (;;) {
+		osMutexAcquire(myMutex, osWaitForever);
+		PTB->PDOR |= (MASK(LED_RED_PIN));
+		osDelay(1000);
+		PTB->PDOR &= (~MASK(LED_RED_PIN));
+		osDelay(1000);
+		osMutexRelease(myMutex);
+	}
+}
+
+void led_green_mutex(void *argument) {
+	for (;;) {
+		osMutexAcquire(myMutex, osWaitForever);
+		PTB->PDOR |= (MASK(LED_GREEN_PIN));
 		osDelay(1000);
 		PTB->PDOR &= (~MASK(LED_GREEN_PIN));
 		osDelay(1000);
+		osMutexRelease(myMutex);
 	}
 }
+

@@ -4,6 +4,7 @@
 #include "led_service.h"
 #include "utils.h"
 #include "delay_service.h"
+#include "lab_service.h"
 
 void led_init_gpio(void) {
 	// Enable Clock to PORTB and PORTD
@@ -93,6 +94,58 @@ void led_green_mutex(void *argument) {
 		PTB->PDOR &= (~MASK(LED_GREEN_PIN));
 		osDelay(1000);
 		osMutexRelease(myMutex);
+	}
+}
+
+void led_red_semaphore(void *argument) {
+	for (;;) {
+		osSemaphoreAcquire(mySem, osWaitForever);
+		PTB->PDOR |= (MASK(LED_RED_PIN));
+		osDelay(1000);
+		PTB->PDOR &= (~MASK(LED_RED_PIN));
+		osDelay(1000);
+		// osSemaphoreRelease(mySem);
+	}
+}
+
+void led_green_semaphore(void *argument) {
+	for (;;) {
+		osSemaphoreAcquire(mySem, osWaitForever);
+		PTB->PDOR |= (MASK(LED_GREEN_PIN));
+		osDelay(1000);
+		PTB->PDOR &= (~MASK(LED_GREEN_PIN));
+		osDelay(1000);
+		// osSemaphoreRelease(mySem);
+	}
+}
+
+void led_red_communication(void *argument) {
+	for (;;) {
+		osThreadFlagsWait(0x0000001, osFlagsWaitAny, osWaitForever);
+		PTB->PDOR |= (MASK(LED_RED_PIN));
+		osDelay(1000);
+		PTB->PDOR &= (~MASK(LED_RED_PIN));
+		osDelay(1000);
+	}
+}
+
+void led_green_communication(void *argument) {
+	for (;;) {
+		osThreadFlagsWait(0x0000001, osFlagsWaitAny, osWaitForever);
+		PTB->PDOR |= (MASK(LED_GREEN_PIN));
+		osDelay(1000);
+		PTB->PDOR &= (~MASK(LED_GREEN_PIN));
+		osDelay(1000);
+	}
+}
+
+void led_blue_communication(void *argument) {
+	for (;;) {
+		osThreadFlagsWait(0x0000001, osFlagsWaitAny, osWaitForever);
+		PTD->PDOR |= (MASK(LED_BLUE_PIN));
+		osDelay(1000);
+		PTD->PDOR &= (~MASK(LED_BLUE_PIN));
+		osDelay(1000);
 	}
 }
 

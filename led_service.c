@@ -121,31 +121,31 @@ void led_green_semaphore(void *argument) {
 
 void led_red_communication(void *argument) {
 	for (;;) {
-		osThreadFlagsWait(0x0000001, osFlagsWaitAny, osWaitForever);
-		PTB->PDOR |= (MASK(LED_RED_PIN));
-		osDelay(1000);
+		//osThreadFlagsWait(0x0001, osFlagsWaitAny, osWaitForever);
+		osEventFlagsWait(led_flag, 0x0001, osFlagsWaitAny, osWaitForever);
 		PTB->PDOR &= (~MASK(LED_RED_PIN));
 		osDelay(1000);
+		PTB->PDOR |= (MASK(LED_RED_PIN));
 	}
 }
 
 void led_green_communication(void *argument) {
 	for (;;) {
-		osThreadFlagsWait(0x0000001, osFlagsWaitAny, osWaitForever);
-		PTB->PDOR |= (MASK(LED_GREEN_PIN));
-		osDelay(1000);
+		//osThreadFlagsWait(0x0002, osFlagsWaitAny, osWaitForever);
+		osEventFlagsWait(led_flag, 0x0002, osFlagsWaitAny, osWaitForever);
 		PTB->PDOR &= (~MASK(LED_GREEN_PIN));
 		osDelay(1000);
+		PTB->PDOR |= (MASK(LED_GREEN_PIN));
 	}
 }
 
 void led_blue_communication(void *argument) {
 	for (;;) {
-		osThreadFlagsWait(0x0000001, osFlagsWaitAny, osWaitForever);
-		PTD->PDOR |= (MASK(LED_BLUE_PIN));
-		osDelay(1000);
+		//osThreadFlagsWait(0x0004, osFlagsWaitAny, osWaitForever);
+		osEventFlagsWait(led_flag, 0x0003, osFlagsWaitAny, osWaitForever);
 		PTD->PDOR &= (~MASK(LED_BLUE_PIN));
 		osDelay(1000);
+		PTD->PDOR |= (MASK(LED_BLUE_PIN));
 	}
 }
 

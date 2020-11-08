@@ -4,6 +4,7 @@
 
 extern osSemaphoreId_t mySem;
 extern osThreadId_t redLED_Id, greenLED_Id, blueLED_Id, control_Id;
+extern osEventFlagsId_t led_flag;
 
 void lab_two(void);
 void lab_three(void);

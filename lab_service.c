@@ -112,15 +112,18 @@ void lab_eight() {
 }
 
 osThreadId_t redLED_Id, greenLED_Id, blueLED_Id, control_Id;
+osEventFlagsId_t led_flag;
 
 void control_thread_communication(void *argument) {
 	while (1) {
-		osThreadFlagsSet(redLED_Id, 0x0000001);
+		//osThreadFlagsSet(redLED_Id, 0x0001);
+		osEventFlagsSet(led_flag, 0x0001);
 		osDelay(1000);
-		osThreadFlagsSet(greenLED_Id, 0x0000001);
+		//osThreadFlagsSet(greenLED_Id, 0x0002);
+		osEventFlagsSet(led_flag, 0x0002);
 		osDelay(1000);
-		osThreadFlagsSet(greenLED_Id, 0x0000001);
-		osThreadFlagsSet(blueLED_Id, 0x0000001);
+		//osThreadFlagsSet(blueLED_Id, 0x0004);
+		osEventFlagsSet(led_flag, 0x0003);
 		osDelay(1000);
 	}
 
@@ -131,6 +134,7 @@ void lab_nine() {
 	led_init_gpio();
 	led_off_rgb();
 	osKernelInitialize();
+	led_flag = osEventFlagsNew(NULL);
 	redLED_Id = osThreadNew(led_red_communication, NULL, NULL);
 	greenLED_Id = osThreadNew(led_green_communication, NULL, NULL);
 	blueLED_Id = osThreadNew(led_blue_communication, NULL, NULL);

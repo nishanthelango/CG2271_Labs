@@ -120,32 +120,47 @@ void led_green_semaphore(void *argument) {
 }
 
 void led_red_communication(void *argument) {
+	myDataPkt myData;
 	for (;;) {
-		//osThreadFlagsWait(0x0001, osFlagsWaitAny, osWaitForever);
-		osEventFlagsWait(led_flag, 0x0001, osFlagsWaitAny, osWaitForever);
-		PTB->PDOR &= (~MASK(LED_RED_PIN));
-		osDelay(1000);
-		PTB->PDOR |= (MASK(LED_RED_PIN));
+		osMessageQueueGet(redMsg, &myData, NULL, osWaitForever);
+		if (myData.cmd == 0x01 && myData.data == 0x01) {
+		  //osThreadFlagsWait(0x0001, osFlagsWaitAny, osWaitForever);
+		  //osEventFlagsWait(led_flag, 0x0001, osFlagsWaitAny, osWaitForever);
+		  PTB->PDOR &= (~MASK(LED_RED_PIN));
+		  osDelay(1000);
+		  PTB->PDOR |= (MASK(LED_RED_PIN));
+			osDelay(1000);
+		}
 	}
 }
 
 void led_green_communication(void *argument) {
+	myDataPkt myData;
 	for (;;) {
-		//osThreadFlagsWait(0x0002, osFlagsWaitAny, osWaitForever);
-		osEventFlagsWait(led_flag, 0x0002, osFlagsWaitAny, osWaitForever);
-		PTB->PDOR &= (~MASK(LED_GREEN_PIN));
-		osDelay(1000);
-		PTB->PDOR |= (MASK(LED_GREEN_PIN));
+		osMessageQueueGet(greenMsg, &myData, NULL, osWaitForever);
+		if (myData.cmd == 0x01 && myData.data == 0x01) {
+		  //osThreadFlagsWait(0x0002, osFlagsWaitAny, osWaitForever);
+		  //osEventFlagsWait(led_flag, 0x0002, osFlagsWaitAny, osWaitForever);
+		  PTB->PDOR &= (~MASK(LED_GREEN_PIN));
+		  osDelay(1000);
+		  PTB->PDOR |= (MASK(LED_GREEN_PIN));
+			osDelay(1000);
+		}
 	}
 }
 
 void led_blue_communication(void *argument) {
+	myDataPkt myData;
 	for (;;) {
-		//osThreadFlagsWait(0x0004, osFlagsWaitAny, osWaitForever);
-		osEventFlagsWait(led_flag, 0x0003, osFlagsWaitAny, osWaitForever);
-		PTD->PDOR &= (~MASK(LED_BLUE_PIN));
-		osDelay(1000);
-		PTD->PDOR |= (MASK(LED_BLUE_PIN));
+		osMessageQueueGet(blueMsg, &myData, NULL, osWaitForever);
+		if (myData.cmd == 0x01 && myData.data == 0x01) {
+		  //osThreadFlagsWait(0x0004, osFlagsWaitAny, osWaitForever);
+		  //osEventFlagsWait(led_flag, 0x0003, osFlagsWaitAny, osWaitForever);
+		  PTD->PDOR &= (~MASK(LED_BLUE_PIN));
+		  osDelay(1000);
+		  PTD->PDOR |= (MASK(LED_BLUE_PIN));
+			osDelay(1000);
+		}
 	}
 }
 

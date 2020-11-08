@@ -12,6 +12,11 @@
 color_t led_color = LED_BLUE_COLOR;
 volatile uint8_t rx_data = 0;
 osMutexId_t myMutex;
+osMessageQueueId_t redMsg, greenMsg, blueMsg;
+osThreadId_t redLED_Id, greenLED_Id, blueLED_Id, control_Id;
+osEventFlagsId_t led_flag;
+uint32_t MSG_COUNT = 1;
+osSemaphoreId_t mySem;
 
 void lab_two(void) {
 	led_init_gpio();
@@ -94,7 +99,6 @@ void lab_seven() {
 	while(1);
 }
 
-osSemaphoreId_t mySem;
 void lab_eight() {
 	SystemCoreClockUpdate();
 	
@@ -111,20 +115,25 @@ void lab_eight() {
 	while(1);
 }
 
-osThreadId_t redLED_Id, greenLED_Id, blueLED_Id, control_Id;
-osEventFlagsId_t led_flag;
-
 void control_thread_communication(void *argument) {
+	myDataPkt myData;
+	myData.cmd = 0x01;
+	myData.data = 0x01;
 	while (1) {
 		//osThreadFlagsSet(redLED_Id, 0x0001);
-		osEventFlagsSet(led_flag, 0x0001);
-		osDelay(1000);
+		//osEventFlagsSet(led_flag, 0x0001);
+		osMessageQueuePut(redMsg, &myData, NULL, 0);
+		osDelay(2000);
+		
 		//osThreadFlagsSet(greenLED_Id, 0x0002);
-		osEventFlagsSet(led_flag, 0x0002);
-		osDelay(1000);
+		//osEventFlagsSet(led_flag, 0x0002);
+		osMessageQueuePut(greenMsg, &myData, NULL, 0);
+		osDelay(2000);
+		
 		//osThreadFlagsSet(blueLED_Id, 0x0004);
-		osEventFlagsSet(led_flag, 0x0003);
-		osDelay(1000);
+		//osEventFlagsSet(led_flag, 0x0003);
+		osMessageQueuePut(blueMsg, &myData, NULL, 0);
+		osDelay(2000); 
 	}
 
 }
@@ -139,6 +148,11 @@ void lab_nine() {
 	greenLED_Id = osThreadNew(led_green_communication, NULL, NULL);
 	blueLED_Id = osThreadNew(led_blue_communication, NULL, NULL);
 	control_Id = osThreadNew(control_thread_communication, NULL, NULL);
+	
+	redMsg = osMessageQueueNew(MSG_COUNT, sizeof(myDataPkt), NULL);
+	greenMsg = osMessageQueueNew(MSG_COUNT, sizeof(myDataPkt), NULL);
+	blueMsg = osMessageQueueNew(MSG_COUNT, sizeof(myDataPkt), NULL);
+
 	osKernelStart();
 	while(1);
 }

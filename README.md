@@ -1,4 +1,6 @@
-## CG2271 Project
+## CG2271 Labs
+
+Lab assignments for NUS module CG2271 (Real-Time Operating Systems)
 
 ### Setup
 - Create new project
